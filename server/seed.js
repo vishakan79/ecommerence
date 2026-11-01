@@ -1,12 +1,8 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import Product from "./models/Product.js";
-import { PRODUCTS } from "./data/products.js";
+import "dotenv/config";
+import { pool, initDb, insertProducts } from "./db.js";
 
-dotenv.config();
-
-await mongoose.connect(process.env.MONGODB_URI);
-await Product.deleteMany({});
-await Product.insertMany(PRODUCTS);
-console.log(`Seeded ${PRODUCTS.length} products`);
-await mongoose.disconnect();
+await initDb();
+await pool.query("TRUNCATE products RESTART IDENTITY CASCADE");
+await insertProducts();
+console.log("Re-seeded products (orders were cleared too)");
+await pool.end();

@@ -1,46 +1,38 @@
-# Kadai — MERN Ecommerce Store
+# Kadai — Ecommerce Store
 
-Full-stack ecommerce app built with **MongoDB, Express, React (Vite) and Node.js**.
+React + Express + Node.js store backed by **Neon (PostgreSQL)**.
+
+- `client/` React app (Vite), deployed on **Vercel**
+- `server/` Express REST API, deployed on **Render**
+- Database: **Neon Postgres** (tables are created and products seeded automatically on first start)
 
 ## Features
-- Product catalog with search, category filter and sorting (server-side)
-- Cart persisted in `localStorage`
+- Product catalog with server-side search, category filter and sorting
+- Cart saved in `localStorage`
 - Register / login with JWT and bcrypt-hashed passwords
-- Checkout creates an order; prices and stock are always verified on the server
+- Checkout runs in a database transaction; prices and stock are verified on the server
 - Order history per user
-- Express serves the built React app, so one deployment gives one URL
-
-## Project structure
-```
-server/   Express API, Mongoose models, routes, seed data
-client/   React app (Vite)
-```
 
 ## Run locally
-1. Copy `server/.env.example` to `server/.env` and set `MONGODB_URI` and `JWT_SECRET`.
-2. Install and start:
 ```bash
+cp server/.env.example server/.env     # set DATABASE_URL and JWT_SECRET
 npm install --prefix server
 npm install --prefix client
-npm run dev:server      # http://localhost:5000
-npm run dev:client      # http://localhost:5173 (proxies /api to the server)
-```
-Products are seeded automatically on first start (or run `npm run seed`).
-
-## Production build
-```bash
-npm run build
-npm start
+npm run dev:server                     # http://localhost:5000
+npm run dev:client                     # http://localhost:5173 (proxies /api to the server)
 ```
 
-## Deploy (Render)
-- Build command: `npm run build`
-- Start command: `npm start`
-- Environment variables: `MONGODB_URI`, `JWT_SECRET`
+## Deploy
+**Backend (Render)** — root directory `server`, build `npm install`, start `npm start`.
+Environment variables: `DATABASE_URL`, `JWT_SECRET`, optional `CLIENT_URL` (comma-separated allowed origins).
+
+**Frontend (Vercel)** — root directory `client`, framework Vite.
+Environment variable: `VITE_API_URL` = your Render backend URL.
 
 ## API
 | Method | Route | Auth | Purpose |
 |---|---|---|---|
+| GET | `/api/health` | no | Health + DB check |
 | POST | `/api/auth/register` | no | Create account |
 | POST | `/api/auth/login` | no | Log in |
 | GET | `/api/auth/me` | yes | Current user |
